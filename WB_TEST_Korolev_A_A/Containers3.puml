@@ -1,0 +1,49 @@
+@startuml
+
+!include <C4/C4_Container>
+!theme plain
+
+scale 1.5
+
+skinparam maxMessageSize 20
+
+System_Ext(webUI, "WEB_UI")
+Container_Ext(webApp, webUI, "Web Application", "Реализует UI и обработку HTTP запросов")
+Container_Ext(api, webUI, "API", "Обеспечивает API для веб-приложения")
+
+System_Ext(apiGateway, "APIGateway")
+Container_Ext(apiContainer, apiGateway, "API Container", "Обрабатывает и транслирует запросы API")
+
+System_Ext(billingService, "BillingService")
+Container_Ext(serviceContainer, billingService, "Service Container", "Обрабатывает бизнес-логику")
+
+System_Ext(localDB, "LocalDB")
+Container_Ext(dbContainer, localDB, "Database Container", "Хранит транзакции и данные")
+
+System_Ext(kafka, "Kafka")
+Container_Ext(kafkaContainer, kafka, "Kafka Container", "Обеспечивает асинхронную обработку")
+
+Rel_Down(webUI, apiGateway, "Отправляет HTTP запросы к")
+Rel_Down(apiGateway, webApp, "Обрабатывает HTTP запросы от", "HTTP")
+Rel_Down(apiGateway, apiContainer, "Транслирует запросы в", "HTTP")
+Rel_Down(apiContainer, serviceContainer, "Обращается к", "HTTP")
+Rel_Down(serviceContainer, dbContainer, "Использует", "JDBC")
+Rel_Down(serviceContainer, kafkaContainer, "Асинхронная обработка через", "JMS")
+
+!define backgroundColor DDDDDD
+!define borderColor 3F51B5
+!define containerColor 607D8B
+
+skinparam BackgroundColor backgroundColor
+skinparam shadowing false
+skinparam RoundCorner 20
+skinparam ArrowColor borderColor
+
+skinparam Container {
+  BackgroundColor containerColor
+  BorderColor containerColor
+  FontColor #FFFFFF
+}
+
+@enduml
+

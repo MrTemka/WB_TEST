@@ -1,0 +1,23 @@
+@startuml
+!include <C4/C4_Context>
+!theme plain
+
+scale 1.5
+
+skinparam maxMessageSize 20
+
+Person_Ext(user, "Пользователь")
+System_Ext(webUI, "WEB_UI")
+System_Ext(apiGateway, "APIGateway")
+System_Ext(billingService, "BillingService")
+System_Ext(balance, "Balance")
+System_Ext(localDB, "LocalDB")
+
+Rel_Down(user, webUI, "Использует")
+Rel_Down(webUI, apiGateway, "Отправляет HTTP запросы к")
+Rel_Down(apiGateway, billingService, "Транслирует запросы в")
+Rel_Down(billingService, balance, "Извлекает транзакции из")
+Rel_Down(billingService, localDB, "Сохраняет транзакции в")
+Rel_Down(balance, billingService, "В случае ошибки, извлекает из")
+
+@enduml
